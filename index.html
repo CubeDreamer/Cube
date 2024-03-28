@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacking Simulation</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .character {
+            color: rgb(0, 98, 0);
+            animation: fall linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function generateColumns() {
+            const numColumns = Math.floor(window.innerWidth / 20); // Adjust the width of columns as needed
+            for (let i = 0; i < numColumns; i++) {
+                const column = document.createElement('div');
+                column.className = 'column';
+
+                const numCharacters = Math.floor(Math.random() * (50 - 10)) + 10; // Adjust the range of characters as needed
+                for (let j = 0; j < numCharacters; j++) {
+                    const char = String.fromCharCode(Math.floor(Math.random() * (126 - 32)) + 32);
+                    const fontSize = Math.floor(Math.random() * (30 - 10)) + 10;
+                    const div = document.createElement('div');
+                    div.textContent = char;
+                    div.className = 'character';
+                    div.style.fontSize = fontSize + 'px';
+                    div.style.animationDuration = (Math.random() * 5 + 1) + 's'; // Randomize animation duration
+                    column.appendChild(div);
+                }
+
+                document.body.appendChild(column);
+            }
+        }
+
+        generateColumns();
+
+        let tapCount = 0;
+        let tapTimer;
+        const tapDelay = 300;
+
+        function doubleTapHandler() {
+            tapCount++;
+            if (tapCount === 1) {
+                tapTimer = setTimeout(function () {
+                    tapCount = 0;
+                }, tapDelay);
+            } else if (tapCount === 2) {
+                clearTimeout(tapTimer);
+                toggleFullScreen();
+                tapCount = 0;
+            }
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('dblclick', doubleTapHandler);
+    </script>
+</body>
+</html>
